@@ -13,6 +13,7 @@
     "test:integration": "jest tests/integration",
     "test:verbose": "jest --verbose",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "test:report": "jest --verbose --json --outputFile=test-results.json",
     "version": "node scripts/sync-version.js && git add markdown-viewer/app.js README.md"
   },
   "keywords": [
