@@ -23,6 +23,7 @@ specdown/
 ├── README.md                    # User-facing project overview
 ├── package.json                 # npm scripts, Jest config, electron-builder config
 ├── docs/                        # All project documentation (AI-generated and human-edited)
+│   ├── README.md                # Index of all project doc folders
 │   └── project-desktop/         # Desktop project — brainstorms, specs, session tasks
 │       ├── README.md            # Entry point: overview, timeline, naming conventions
 │       ├── 2026-02-20-brainstorm-desktop-electron.md
