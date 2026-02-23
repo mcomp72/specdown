@@ -7,6 +7,7 @@ Each project gets its own subdirectory:
 | Folder | Description |
 |---|---|
 | [project-desktop/](project-desktop/) | Electron desktop app — brainstorms, specs, session task checklists |
+| [project-ios/](project-ios/) | iOS & iPad app — brainstorms, specs, session task checklists |
 
 ## Naming Conventions
 
