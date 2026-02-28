@@ -1,4 +1,4 @@
-# Agent instructions for Codex
+# Agent instructions
 
 This project keeps its primary agent instructions in `CLAUDE.md`.
 When working with this repo, read and follow `CLAUDE.md` for:
