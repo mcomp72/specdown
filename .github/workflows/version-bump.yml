@@ -12,8 +12,7 @@ concurrency:
 
 jobs:
   # -----------------------------------------------------------------
-  # bump: commits the version bump directly to main and tags the
-  # release when new code lands on main.
+  # bump: creates a version-bump PR when new code lands on main.
   # For pull_request events it is a no-op so the required "bump"
   # status check passes on every PR.
   # -----------------------------------------------------------------
@@ -28,6 +27,7 @@ jobs:
 
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -46,19 +46,83 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Pull latest
-        if: github.event_name == 'push'
-        run: git pull --rebase origin main
-
       - name: Bump patch version
         if: github.event_name == 'push'
         run: npm version patch --no-git-tag-version
 
-      - name: Commit, tag, and push
+      - name: Create version bump PR
         if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          BRANCH="auto/version-bump-v${VERSION}"
+
+          # Clean up branch from any previous failed run
+          git push origin --delete "$BRANCH" 2>/dev/null || true
+
+          git checkout -b "$BRANCH"
           git add package.json markdown-viewer/app.js README.md
           git commit -m "Bump version to v${VERSION} [version bump]"
-          git tag -a "v${VERSION}" -m "v${VERSION}"
-          git push origin main "v${VERSION}"
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --title "Bump version to v${VERSION} [version bump]" \
+            --body "Automated version bump to v${VERSION}" \
+            --base main \
+            --head "$BRANCH"
+          gh pr merge "$BRANCH" --auto --squash --delete-branch
+
+  # -----------------------------------------------------------------
+  # tag: after a version-bump PR is squash-merged into main, create
+  # the version tag, then explicitly trigger the desktop build and
+  # static deploy workflows.
+  #
+  # Why explicit triggers? Tags pushed with GITHUB_TOKEN do NOT fire
+  # push-tag events for other workflows (GitHub prevents this to
+  # avoid infinite loops). Using gh workflow run (workflow_dispatch)
+  # works with GITHUB_TOKEN and gives us precise control.
+  # -----------------------------------------------------------------
+  tag:
+    runs-on: ubuntu-latest
+
+    if: >-
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.message, '[version bump]')
+
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create and push tag
+        id: tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v${VERSION}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # If the tag already exists (e.g. from a previous failed run),
+          # delete it so we can recreate it on the correct commit.
+          if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
+            echo "::warning::Tag ${TAG} already exists on remote — replacing it"
+            git push origin --delete "${TAG}" 2>/dev/null || true
+          fi
+
+          git tag -a "${TAG}" -m "${TAG}"
+          git push origin "${TAG}"
+
+      - name: Trigger desktop build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run desktop.yml --ref "${{ steps.tag.outputs.tag }}"
+
+      - name: Trigger static deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run static.yml --ref "${{ steps.tag.outputs.tag }}"
