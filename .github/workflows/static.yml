@@ -1,8 +1,7 @@
 name: Deploy static content
 
 on:
-  push:
-    branches: [main]
+  # Triggered explicitly by the version-bump "tag" job, or manually.
   workflow_dispatch:
 
 permissions:

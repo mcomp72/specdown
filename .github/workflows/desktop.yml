@@ -1,9 +1,13 @@
 name: Build Desktop App
 
 on:
+  # Tag pushes (e.g. from a PAT or GitHub App — GITHUB_TOKEN tag pushes
+  # do NOT trigger this; the version-bump workflow uses workflow_dispatch
+  # instead).
   push:
     tags:
       - 'v*'
+  # Triggered explicitly by the version-bump "tag" job, or manually.
   workflow_dispatch:
 
 jobs:
