@@ -22,3 +22,9 @@ YYYY-MM-DD-<type>-<detail>.md
 - `brainstorm` — pre-code exploration, problem framing, framework comparisons
 - `spec` — technical specification (version new files for major revisions, e.g. `spec-desktop-v2.md`)
 - `tasks` — session-level implementation checklists (one file per working session, numbered)
+
+## Not Built Yet (Current Cross-Project Snapshot)
+
+- **Desktop (`project-desktop`)**: No remaining features in the current Session 1–4 scope.
+- **URL opening (`project-url`)**: Inline reviewer comments (Google Docs-style) are still unimplemented and intentionally deferred from Session 01.
+- **iOS/iPad (`project-ios`)**: Still in brainstorming (no implementation yet); next major milestones are authoring `spec-ios-v1` and executing Session 01 setup tasks.
