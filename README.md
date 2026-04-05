@@ -233,7 +233,7 @@ Download the latest `.dmg` from [GitHub Releases](../../releases).
 The release pipeline is fully automated. Every merge to `main` triggers the following sequence:
 
 1. **Version Bump** -- The "Bump version on merge" workflow runs `npm version patch`, creating a new version commit and git tag (e.g., `v0.0.46`), then pushes both to `main`.
-2. **DMG Build** -- The "Build Desktop App" workflow detects the version bump, checks out the tagged code on a macOS runner, and runs `npm run desktop:build` to produce a `.dmg`.
+2. **DMG Build** -- The "Build Desktop App" workflow detects the version bump, checks out the tagged code on a macOS runner, and runs `npm run dev:build` to produce a `.dmg`.
 3. **GitHub Release** -- The DMG is uploaded to a GitHub Release matching the new tag. The release is created automatically if it does not already exist.
 4. **Web Deploy** -- Simultaneously, the "Deploy static content" workflow deploys the latest web app to GitHub Pages.
 
@@ -249,11 +249,11 @@ If the automated build did not run (or you need to rebuild):
 2. Click **Run workflow** and select the `main` branch.
 3. The workflow will build a DMG and attach it to the most recent tag's release.
 
-#### Building a DMG Locally (macOS only)
+#### Building Locally
 
 ```bash
 npm install
-npm run desktop:build    # produces a .dmg in dist/
+npm run dev:build    # produces a .dmg on macOS, .exe installer on Windows
 ```
 
 ### Development
@@ -268,12 +268,12 @@ npm install               # install Electron and all dependencies
 
 **Launch the app:**
 ```bash
-npm run desktop           # opens the Specdown Desktop window
+npm run dev           # opens the Specdown Desktop window
 ```
 
-**Build the DMG locally (macOS only):**
+**Build an installer locally:**
 ```bash
-npm run desktop:build     # produces a .dmg in dist/
+npm run dev:build     # produces a .dmg on macOS, .exe installer on Windows
 ```
 
 Requires Node.js (v18+) installed on your machine.

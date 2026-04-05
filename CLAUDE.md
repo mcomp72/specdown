@@ -93,8 +93,8 @@ When starting a new session, **add a tasks file** with the next session number a
 ```bash
 npm test                  # run full Jest suite (required before committing)
 npm run test:coverage     # coverage report
-npm run desktop           # launch Electron app from source (macOS)
-npm run desktop:build     # build .dmg locally (macOS only)
+npm run dev           # launch Electron app from source (macOS)
+npm run dev:build     # build installer locally (.dmg on macOS, .exe on Windows)
 ```
 
 Tests must pass before committing. Coverage thresholds are enforced (see `package.json`).

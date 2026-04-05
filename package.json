@@ -4,8 +4,8 @@
   "description": "SpecDown: A lightweight, browser-based markdown viewer with enhanced diagram navigation capabilities",
   "main": "desktop/main.js",
   "scripts": {
-    "desktop": "electron .",
-    "desktop:build": "electron-builder",
+    "dev": "electron .",
+    "dev:build": "electron-builder",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -70,7 +70,7 @@
       "title": "Specdown Desktop"
     },
     "win": {
-      "target": "nsis",
+      "target": ["nsis", "portable"],
       "icon": "markdown-viewer/favicon.png"
     },
     "nsis": {
