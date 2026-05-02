@@ -11,6 +11,9 @@ coverage/
 *.log
 test-results.json
 
+# Build output
+dist/
+
 # IDE files
 .vscode/
 .idea/
